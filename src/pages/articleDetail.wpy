@@ -1,0 +1,126 @@
+<style lang="less">
+  @import "../styles/base";
+
+  .noun-detail {
+    width: 100%;
+  }
+  .noun-detail .article-theme {
+    position: relative;
+    width: 100%;
+    height: 350rpx;
+    background-position: center;
+    background-size: cover;
+  }
+  .noun-detail .article-theme .article-theme-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 350rpx;
+    background-image: linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255,255,255,1));
+    .text {
+      margin: 0 30rpx;
+      color: #333;
+    }
+    .noun-name {
+      margin: 40rpx 30rpx;
+      font-family: "PingFang SC";
+      font-size: 36rpx;
+      font-weight: 800;
+    }
+    .title {
+      margin: 60rpx 30rpx;
+      font-family: "PingFang SC";
+      font-size: 28rpx;
+      font-weight: 800;
+    }
+    .describe {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: flex-start;
+      align-items: center;
+      font-family: "PingFang SC";
+      font-size: 24rpx;
+      font-weight: 400;
+      .describe-item {
+        margin-right: 20rpx;
+      }
+      .author {
+
+      }
+      .publish-time {
+
+      }
+    }
+  }
+  .noun-detail .article-rich-text {
+    padding: 0 30rpx;
+  }
+</style>
+
+<template>
+  <view class="container" style="padding: 0">
+    <view class="noun-detail">
+      <view class="article-theme" style="background-image: url('{{articleDetail.theme_url}}')">
+        <view class="article-theme-mask">
+          <view class="text noun-name" wx:if="{{articleType !== 4}}">{{ noun }}</view>
+          <view class="text title">{{ articleDetail.title }}</view>
+          <view class="text subtitle">{{ articleDetail.subTitle }}</view>
+          <view class="text describe"  wx:if="{{articleType === 4}}">
+            <view class="describe-item author">李木子</view>
+            <view class="describe-item publish-time">5月19日</view>
+          </view>
+        </view>
+      </view>
+      <view class="article-rich-text">
+        <htmlParser :parserName="article" :parserContent.sync="articleText"/>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import htmlParser from '../components/htmlParser'
+  export default class NounDetail extends wepy.page {
+    config = {
+
+    }
+    components = {
+      htmlParser: htmlParser
+    }
+    data = {
+      article: 'myHtmlParserKiner1',
+      articleText: '',
+      articleType: '',
+      noun: 'Jasmine',
+      articleDetail: {
+        theme_url: 'https://pic.lehe.com/pic/_o/59/7e/8954fff755fdf834e7a7b044a9f8_690_250.cz.jpg',
+        title: 'Instagram 也将推出防沉迷功能，帮助用户更好地管理时间',
+        subTitle: '',
+        text: ''
+      }
+    }
+    methods = {
+    }
+    async onLoad(options) {
+      console.log(options)
+      this.articleType = parseInt(options.type)
+      let pageTitle = '每日推送'
+      if (options.hasOwnProperty('pageTitle')) {
+        pageTitle = options.pageTitle
+        wepy.setNavigationBarTitle({
+          title: pageTitle
+        })
+      }
+      if (options.hasOwnProperty('text')) {
+        this.articleText = options.text
+        this.$apply()
+        // 调用通知接口通知组件更新数据
+        this.$invoke('htmlParser', 'htmlParserNotice')
+      } else {
+        // TODO 请求接口拿数据
+      }
+    }
+  }
+</script>

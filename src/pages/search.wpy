@@ -1,0 +1,181 @@
+<style lang="less">
+  @import "../styles/base";
+
+  button::after{ border: none; }
+
+  .search {
+    width: 100%;
+  }
+  .search .search-board {
+    width: 100%;
+    height: 100rpx;
+    .search-input {
+      display: inline-block;
+      vertical-align: top;
+      width: 86%;
+      height: 80rpx;
+      background-color: #ddd;
+      input {
+        padding: 10rpx 20rpx;
+        height: 60rpx;
+      }
+    }
+    .search-submit {
+      display: inline-block;
+      vertical-align: top;
+      width: 14%;
+      height: 80rpx;
+      .sub-btn {
+        padding: 0;
+        margin: 0;
+        text-align: right;
+        line-height: 80rpx;
+        color: #333;
+        border-radius: 0;
+        background: #fff;
+        font-size: 30rpx;
+        font-weight: 800;
+        font-family: "PingFang SC";
+      }
+    }
+  }
+
+  .search .search-result {
+    margin: 30rpx auto;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    .search-result-item {
+      width: 630rpx;
+      height: 150rpx;
+      margin: 20rpx 30rpx;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: flex-start;
+      align-items: flex-start;
+      .noun-logo {
+        width: 150rpx;
+        height: 150rpx;
+        border-radius: 50%;
+      }
+      .noun-info {
+        height: 150rpx;
+        margin-left: 40rpx;
+        font-family: "PingFang SC";
+        font-size: 30rpx;
+        font-weight: 500;
+        color: #333;
+        display: flex;
+        flex-flow: column;
+        justify-content: center;
+      }
+    }
+  }
+
+</style>
+
+<template>
+  <view class="container">
+    <view class="search">
+      <view class="search-board">
+        <view class="search-input">
+          <input type="text" value="{{searchText}}" />
+        </view>
+        <form class="search-submit" bindsubmit="searchSubmit" report-submit="true">
+          <button class="sub-btn" formType="submit">搜索</button>
+        </form>
+      </view>
+      <view class="search-result">
+        <view class="search-result-item" wx:for="{{ searchResult }}" wx:key="key" index="index" item="item">
+          <image class="noun-logo" src="{{item.logo}}"></image>
+          <view class="noun-info">
+            <view class="noun-name">{{ item.nounName }}</view>
+            <view class="noun-name">{{ item.nounName_cn }}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '搜索'
+    }
+    data = {
+      searchText: '',
+      searchResult: [
+        {
+          id: '123',
+          logo: '../static/imgs/test/avatar.jpeg',
+          noun: 'CHANEL',
+          jump_url: 'noun detail',
+          nounName: 'Jasmine',
+          nounName_cn: '李木子'
+        },
+        {
+          id: '123',
+          logo: '../static/imgs/test/avatar.jpeg',
+          noun: 'CHANEL',
+          jump_url: 'noun detail',
+          nounName: 'Jasmine',
+          nounName_cn: '李木子'
+        },
+        {
+          id: '123',
+          logo: '../static/imgs/test/avatar.jpeg',
+          noun: 'CHANEL',
+          jump_url: 'noun detail',
+          nounName: 'Jasmine',
+          nounName_cn: '李木子'
+        },
+        {
+          id: '123',
+          logo: '../static/imgs/test/avatar.jpeg',
+          noun: 'CHANEL',
+          jump_url: 'noun detail',
+          nounName: 'Jasmine',
+          nounName_cn: '李木子'
+        },
+        {
+          id: '123',
+          logo: '../static/imgs/test/avatar.jpeg',
+          noun: 'CHANEL',
+          jump_url: 'noun detail',
+          nounName: 'Jasmine',
+          nounName_cn: '李木子'
+        },
+        {
+          id: '123',
+          logo: '../static/imgs/test/avatar.jpeg',
+          noun: 'CHANEL',
+          jump_url: 'noun detail',
+          nounName: 'Jasmine',
+          nounName_cn: '李木子'
+        }
+      ]
+    }
+    methods = {
+      searchSubmit (e) {
+        this.sendData(e.detail.formId)
+      }
+    }
+    async sendData(formId) {
+      console.log('send data')
+      console.log(formId)
+      console.log(this.searchText)
+    }
+    onLoad(options) {
+      console.log('search onload')
+      console.log(options.searchKey)
+      console.log(options.formId)
+      if (options.searchKey !== '') {
+        this.searchText = options.searchKey
+        // TODO 执行post请求，查询搜索结果
+      }
+    }
+  }
+</script>

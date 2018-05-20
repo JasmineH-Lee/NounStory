@@ -1,0 +1,307 @@
+<style lang="less">
+  @import "../styles/base";
+
+  button::after{ border: none; }
+
+  .nouns {
+    width: 100%;
+  }
+  .nouns .search-board {
+    width: 100%;
+    height: 100rpx;
+    .search-input {
+      display: inline-block;
+      vertical-align: top;
+      width: 86%;
+      height: 80rpx;
+      background-color: #ddd;
+      input {
+        padding: 10rpx 20rpx;
+        height: 60rpx;
+      }
+    }
+    .search-submit {
+      display: inline-block;
+      vertical-align: top;
+      width: 14%;
+      height: 80rpx;
+      .sub-btn {
+        padding: 0;
+        margin: 0;
+        text-align: right;
+        line-height: 80rpx;
+        color: #333;
+        border-radius: 0;
+        background: #fff;
+        font-size: 30rpx;
+        font-weight: 800;
+        font-family: "PingFang SC";
+      }
+    }
+  }
+  .nouns .letter-index {
+    position: fixed;
+    z-index: 9;
+    top: 100rpx;
+    right: 0rpx;
+    margin: 50rpx 30rpx;
+    width: 40rpx;
+    background-color: #FDF5E6;
+    border-radius: 50rpx;
+    padding: 10rpx 0;
+    text-align: center;
+    .letter-index-item {
+      .letter {
+        width: 40rpx;
+        height: 40rpx;
+        margin: -10rpx 0;
+        border-radius: 50%;
+        line-height: 40rpx;
+        font-family: "PingFang SC";
+        font-size: 22rpx;
+        font-weight: 400;
+        color: #333;
+      }
+      .letter:hover {
+        background-color: #FFEBCD;
+      }
+    }
+  }
+  .nouns .nouns-list {
+    position: fixed;
+    left: 30rpx;
+    top: 120rpx;
+    width: 100%;
+    height: 100%;
+
+    .nouns-list-item {
+      .nouns-index {
+        margin: 20rpx 0;
+        font-family: "PingFang SC";
+        font-size: 36rpx;
+        font-weight: 600;
+        color: #333;
+      }
+      .nouns-inList {
+        .noun-name {
+          display: inline-block;
+          font-family: "PingFang SC";
+          font-size: 28rpx;
+          font-weight: 400;
+          color: #333;
+        }
+        .noun-name-cn {
+          display: inline-block;
+          margin-left: 20rpx;
+          font-family: "PingFang SC";
+          font-size: 28rpx;
+          font-weight: 400;
+          color: #333;
+        }
+      }
+    }
+  }
+
+</style>
+
+<template>
+  <view class="container">
+    <view class="nouns">
+      <view class="search-board">
+        <view class="search-input">
+          <input type="text" value="{{searchText}}" bindinput="setSearchText" />
+        </view>
+        <form class="search-submit" bindsubmit="searchSubmit" bindreset="searchReset" report-submit="true">
+          <button class="sub-btn" formType="submit">搜索</button>
+        </form>
+      </view>
+      <view class="letter-index">
+        <view class="letter-index-item" wx:for="{{letterList}}" wx:key="key" item="item">
+          <view class="letter" @tap='jumpTo' data-opt='{{item}}'>{{item}}</view>
+        </view>
+      </view>
+      <scroll-view class="nouns-list" scroll-into-view="{{toView}}" scroll-y="true" scroll-with-animation="true">
+        <view class="nouns-list-item" wx:for="{{nounList}}" id="{{item.index}}" wx:key="key" data-rol="{{item.index}}">
+          <view class="nouns-index">{{item.index}}</view>
+          <view class="nouns-inList" wx:for="{{item.index_list}}" wx:key="key" item="item" @tap.stop="goToNoun('{{item}}')">
+            <view class="noun-name">{{item.noun}}</view>
+            <view class="noun-name-cn">{{item.noun_cn}}</view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class NounList extends wepy.page {
+    config = {
+      navigationBarTitleText: '品牌列表'
+    }
+    data = {
+      nounList: [
+        {
+          index: 'A',
+          id: 1,
+          index_list: [
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            }
+          ]
+        },
+        {
+          index: 'B',
+          id: 2,
+          index_list: [
+            {
+              noun_id: 123,
+              noun: 'Britl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Britl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            }
+          ]
+        },
+        {
+          index: 'C',
+          id: 3,
+          index_list: [
+            {
+              noun_id: 123,
+              noun: 'Critl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Critl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            }
+          ]
+        },
+        {
+          index: 'D',
+          id: 3,
+          index_list: [
+            {
+              noun_id: 123,
+              noun: 'Critl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Critl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            }
+          ]
+        },
+        {
+          index: 'E',
+          id: 3,
+          index_list: [
+            {
+              noun_id: 123,
+              noun: 'Critl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Critl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            }
+          ]
+        },
+        {
+          index: 'F',
+          id: 3,
+          index_list: [
+            {
+              noun_id: 123,
+              noun: 'Critl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Critl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            }
+          ]
+        },
+        {
+          index: 'G',
+          id: 3,
+          index_list: [
+            {
+              noun_id: 123,
+              noun: 'Critl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Critl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            }
+          ]
+        }
+      ],
+      letterList: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
+        'V', 'W', 'X', 'Y', 'Z', '#'],
+      toView: '',
+      searchText: ''
+    }
+    methods = {
+      jumpTo (e) {
+        this.toView = e.currentTarget.dataset.opt
+        this.$apply()
+      },
+      setSearchText (e) {
+        console.log(e.detail.value)
+        this.searchText = e.detail.value
+      },
+      searchSubmit (e) {
+        let formId = e.detail.formId
+        console.log(this.searchText)
+        // TODO 在这个页面查询搜索结果直接通过页面跳转传给search页面
+        // TODO search 页面的搜索在自己页面执行
+        wepy.navigateTo({
+          url: '/pages/search?searchKey=' + this.searchText
+        })
+      },
+      searchReset (e) {
+        console.log('reset')
+      },
+      goToNoun (item) {
+        wepy.navigateTo({
+          url: '/pages/noun?noun_id=' + item.noun_id
+        })
+      }
+    }
+    onLoad() {
+      console.log('nounlist onload')
+    }
+  }
+</script>

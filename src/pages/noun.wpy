@@ -1,0 +1,154 @@
+<style lang="less">
+  @import "../styles/base";
+
+  .noun {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+  }
+  .noun .noun-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    padding: 0 30rpx;
+    overflow: scroll;
+
+    .basic-info {
+      color: #fff;
+      font-family: "PingFang SC";
+      .noun-title {
+        display: inline-block;
+        margin-top: 50rpx;
+        margin-bottom: 30rpx;
+        height: 100rpx;
+        font-size: 32px;
+        font-weight: 600;
+        line-height: 90rpx;
+        text-align: left;
+      }
+      .basic-info-detail {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+        align-content: center;
+        .label {
+          display: inline-block;
+          width: 200rpx;
+          text-align: left;
+        }
+        .detail {
+          display: inline-block;
+          text-align: left;
+        }
+      }
+    }
+    .detail-btns {
+      margin-top: 50rpx;
+      color: #fff;
+      .bubble {
+        /*TODO bubble文字特效*/
+
+      }
+    }
+    .noun-detail {
+      margin-top: 40rpx;
+      color: #fff;
+      font-family: "PingFang SC";
+      .detail-item {
+        margin: 30rpx 40rpx 30rpx 0;
+        .detail-title {
+          font-size: 34rpx;
+          font-weight: 600;
+        }
+        .detail-info {
+          margin-top: 20rpx;
+          margin-right: 30rpx;
+          font-size: 28rpx;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+</style>
+
+<template>
+  <view class="container">
+    <view class="noun" style="background-image: url('{{img}}')">
+      <srcoll-view class="noun-mask">
+        <view class="basic-info">
+          <view class="noun-title">{{ brandInfo.title }}</view>
+          <view class="basic-info-detail">
+            <view class="label">创始人：</view>
+            <view class="detail">{{ brandInfo.founder }}</view>
+          </view>
+          <view class="basic-info-detail">
+            <view class="label">成立时间：</view>
+            <view class="detail">{{ brandInfo.since }}</view>
+          </view>
+          <view class="basic-info-detail">
+            <view class="label">国家：</view>
+            <view class="detail">{{ brandInfo.icountryd }}</view>
+          </view>
+          <view class="basic-info-detail">
+            <view class="label">所属行业：</view>
+            <view class="detail">{{ brandInfo.industry }}</view>
+          </view>
+        </view>
+        <!--<view class="detail-btns">-->
+          <!--<view class="bubble" @tap.stop="goToNounDetail(0)">创始人背景</view>-->
+          <!--<view class="bubble" @tap.stop="goToNounDetail(1)">品牌背景</view>-->
+          <!--<view class="bubble" @tap.stop="goToNounDetail(2)">品牌文化</view>-->
+          <!--<view class="bubble" @tap.stop="goToNounDetail(3)">品牌辨识</view>-->
+        <!--</view>-->
+        <view class="noun-detail">
+          <view class="detail-item" wx:for="{{ brandInfo.info_list}}" wx:key="key" index="index" item="item">
+            <view class="detail-title" @tap.stop="goToNounDetail('{{item}}')">{{ item.mean }}</view>
+            <view class="detail-info">{{ item.value }}</view>
+          </view>
+        </view>
+      </srcoll-view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import apis from '../apis/apis'
+  export default class Noun extends wepy.page {
+    config = {
+      navigationBarTitleText: 'Noun'
+    }
+    data = {
+      img: 'https://pic.lehe.com/pic/_o/ef/7b/7480f297e74be6e26a39140f4874_750_750.cz.jpg_9fcd41c3_s1_375_2000.jpg',
+      brandInfo: {}
+    }
+    methods = {
+      goToNounDetail (item) {
+        let title = item.title
+        let text = item.value
+        let pageTitle = item.mean
+        wepy.navigateTo({
+          url: '/pages/articleDetail?title=' + title + '&pageTitle=' + pageTitle + '&text=' + text + '&type=' + 2
+        })
+      }
+    }
+    async onLoad(options) {
+      console.log('noun onload')
+      console.log(options)
+      let res = await apis.Noun({
+        query: {
+          id: 1
+        }
+      })
+      let data = res.data
+      this.brandInfo = data.data
+      console.log(this.brandInfo)
+      this.$apply()
+    }
+  }
+</script>

@@ -22,13 +22,36 @@ setStore(store)
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/index'
+      'pages/index',
+      'pages/nounList',
+      'pages/me',
+      'pages/Anchor',
+      'pages/test',
+      'pages/noun',
+      'pages/articleDetail',
+      'pages/search'
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
       navigationBarTextStyle: 'black'
+    },
+    'tabBar': {
+      'color': '#999999',
+      'selectedColor': '#f66',
+      'backgroundColor': '#ffffff',
+      'borderStyle': 'black',
+      'list': [{
+        'pagePath': 'pages/nounList',
+        'text': '品牌列表'
+      }, {
+        'pagePath': 'pages/index',
+        'text': '首页'
+      }, {
+        'pagePath': 'pages/me',
+        'text': '我的'
+      }]
     }
   }
 
@@ -38,7 +61,7 @@ export default class extends wepy.app {
 
   constructor () {
     super()
-    this.use('requestfix')
+    this.use('promisify')
   }
 
   onLaunch() {

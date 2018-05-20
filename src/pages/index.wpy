@@ -1,254 +1,192 @@
 <style lang="less">
-  .userinfo {
+  @import "../styles/base";
+
+  .index-title {
+    width: 680rpx;
+    height: 1100rpx;
+    margin: 0 auto;
+
+    .index-date {
+      margin-top: 20rpx;
+      font-family: "PingFang SC";
+      font-size: larger;
+      font-weight: 900;
+      color: #333;
+    }
+    .index-week {
+      margin: 20rpx 0;
+      font-family: "PingFang SC";
+      font-size: large;
+      font-weight: 400;
+      color: #333;
+    }
+    .index-main-img {
+      width: 680rpx;
+      height: 800rpx;
+
+    }
+    .index-today-sentence {
+      margin: 10rpx 0;
+      font-family: "PingFang SC";
+      font-size: 36rpx;
+      font-weight: 600;
+      color: #333;
+    }
+  }
+
+  .index-news-container {
+    width: 100%;
+    padding: 10rpx 0;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
+    background-color: #f5f5f5;
+
+    .news-item {
+      position: relative;
+      margin: 30rpx 0;
+      width: 680rpx;
+      background-color: #fff;
+      .news-item-attention {
+        padding: 30rpx;
+        font-family: "PingFang SC";
+        font-size: 28rpx;
+        font-weight: 400;
+        color: #999;
+      }
+      .news-item-img {
+        width: 680rpx;
+        height: 400rpx;
+      }
+      .news-item-title {
+        padding: 0 20rpx;
+        font-family: "PingFang SC";
+        font-size: 38rpx;
+        font-weight: 400;
+        color: #333;
+      }
+      .news-item-bottom {
+        position: relative;
+        padding: 20rpx 30rpx;
+        margin: 30rpx 0;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+        align-items: center;
+        .news-item-tag {
+          border: 1px solid #333;
+          padding: 2rpx 5rpx;
+          font-family: "PingFang SC";
+          font-size: 28rpx;
+          font-weight: 400;
+          color: #666;
+        }
+        .news-operate-list {
+          position: absolute;
+          right: 30rpx;
+          display: flex;
+          flex-flow: row nowrap;
+          justify-content: space-between;
+          align-items: center;
+          .operate-icon {
+            margin: 0 10rpx;
+          }
+        }
+      }
+    }
+
   }
 
-  .userinfo-avatar {
-    width: 80rpx;
-    height: 80rpx;
-    border-radius: 50%;
-  }
 
-  .userinfo-nickname {
-    color: #aaa;
-  }
 </style>
+
 <template>
-  <view class="container">
-    <view class="userinfo" @tap="handleViewTap">
-      <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
-      <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
+  <view class="container" style="padding: 0">
+    <view class="index-title">
+      <view class="index-date">{{ indexTitle.date }}</view>
+      <view class="index-week">{{ indexTitle.week_num }}</view>
+      <image class="index-main-img" src="{{ indexTitle.index_main_img }}"></image>
+      <view class="index-today-sentence">{{ indexTitle.sentence }}</view>
     </view>
-
-    <panel>
-      <view class="title" slot="title">测试数据绑定</view>
-
-      <text class="info">{{normalTitle}}</text>
-      <text class="info">{{setTimeoutTitle}}</text>
-      <text class="info">{{mixin}}</text>
-      <text class="info">{{mynum}}</text>
-      <text class="info">{{now}}</text>
-      <text class="info">{{num}}</text>
-      <text class="info">{{asyncNum}}</text>
-      <text class="info">{{sumNum}}</text>
-      <button @tap="plus('a')" size="mini">  +  </button>
-    </panel>
-
-    <panel>
-      <view class="title" slot="title">其它测试</view>
-      <button @tap="toast" size="mini">第三方组件</button>
-      <button @tap="communicate" size="mini">组件通信</button>
-      <button @tap="tap" size="mini">混合TAP事件</button>
-    </panel>
-
-    <panel>
-      <view class="title" slot="title">测试并发网络请求</view>
-      <view>返回结果: <text>{{netrst}}</text></view>
-      <button @tap="request" size="mini"> 点我发起10个请求 </button>
-    </panel>
-
-    <panel>
-      <view class="title" slot="title">测试组件</view>
-
-      <text class="testcounter">计数组件1: </text>
-      <view class="counterview">
-        <counter1 @index-emit.user="counterEmit" />
+    <view class="index-news-container">
+      <view class="news-item" wx:for="{{ newsList }}" index="index" wx:key="key"
+            item="item" @tap.stop="goToNewsDetail('{{item}}')">
+        <!--<view class="news-item-attention">{{ item.attention_num }}人收藏了</view>-->
+        <image class="news-item-img" src="{{item.main_image_url}}"></image>
+        <view class="news-item-title">{{item.title}}</view>
+        <view class="news-item-bottom">
+          <view class="news-item-tag" wx:if="{{item.isDisplay}}">{{ item.tag }}</view>
+          <view class="news-operate-list">
+            <view class="operate-icon more" @tap.stop="operate('{{item}}')">操作</view>
+            <view class="operate-icon share" @tap.stop="share('{{item}}')">分享</view>
+            <view class="operate-icon collect" @tap.stop="removeCollect('{{item}}')">收藏</view>
+          </view>
+        </view>
       </view>
-
-      <text class="testcounter">计数组件2: </text>
-
-      <view class="counterview">
-        <counter2 :num.sync="mynum"></counter2>
-      </view>
-    </panel>
-
-    <panel>
-      <view class="title" slot="title">测试组件Repeat</view>
-      <repeat for="" index="index" item="item" key="key">
-        <group :grouplist="item" :indexa="index"></group>
-      </repeat>
-    </panel>
-
-    <panel>
-      <view class="title" slot="title">测试列表</view>
-      <list></list>
-    </panel>
-
-    <toast />
+    </view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
-  import { connect } from 'wepy-redux'
-  import Panel from '@/components/panel' // alias example
-  import Counter from 'counter' // alias example
-  import List from '../components/list' // aliasFields example
-  import moduleA from 'module-a' // aliasFields ignore module example
-  import Group from '../components/group'
-  import Toast from 'wepy-com-toast'
-  import testMixin from '../mixins/test'
-
-  console.log('moduleA ignored: ', moduleA) // => moduleA ignored: {}
-
-  @connect({
-    num (state) {
-      return state.counter.num
-    },
-    asyncNum (state) {
-      return state.counter.asyncNum
-    },
-    sumNum (state) {
-      return state.counter.num + state.counter.asyncNum
-    }
-  })
-
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: 'test'
+      navigationBarTitleText: '你不知道的品牌故事'
     }
-    components = {
-      panel: Panel,
-      counter1: Counter,
-      counter2: Counter,
-      list: List,
-      group: Group,
-      toast: Toast
-    }
-
-    mixins = [testMixin]
-
     data = {
-      mynum: 20,
-      userInfo: {
-        nickName: '加载中...'
+      indexTitle: {
+        index_main_img: 'https://pic.lehe.com/pic/_o/92/2b/f16ad610c5e036174d2bc9318d7d_750_702.cz.jpg',
+        date: '五月二十一日',
+        week_num: '星期一',
+        sentence: 'Title or some special sentence ~ '
       },
-      normalTitle: '原始标题',
-      setTimeoutTitle: '标题三秒后会被修改',
-      count: 0,
-      netrst: '',
-      groupList: [
+      newsList: [
         {
-          id: 1,
-          name: '点击改变',
-          list: [
-            {
-              childid: '1.1',
-              childname: '子项，点我改变'
-            }, {
-              childid: '1.2',
-              childname: '子项，点我改变'
-            }, {
-              childid: '1.3',
-              childname: '子项，点我改变'
-            }
-          ]
+          attention_num: 5,
+          main_image_url: '../static/imgs/test/avatar.jpeg',
+          title: '日式汉堡肉 附最快手百搭日式红酒酱汁',
+          tag: '下厨',
+          jump_url: '文章跳转链接',
+          isDisplay: false
         },
         {
-          id: 2,
-          name: '点击改变',
-          list: [
-            {
-              childid: '2.1',
-              childname: '子项，点我改变'
-            }, {
-              childid: '2.2',
-              childname: '子项，点我改变'
-            }, {
-              childid: '2.3',
-              childname: '子项，点我改变'
-            }
-          ]
+          attention_num: 6,
+          main_image_url: '../static/imgs/test/avatar.jpeg',
+          title: '日式汉堡肉 附最快手百搭日式红酒酱汁',
+          tag: '下厨',
+          jump_url: '文章跳转链接',
+          isDisplay: true
         },
         {
-          id: 3,
-          name: '点击改变',
-          list: [
-            {
-              childid: '3.1',
-              childname: '子项，点我改变'
-            }
-          ]
+          attention_num: 8,
+          main_image_url: '../static/imgs/test/avatar.jpeg',
+          title: '日式汉堡肉 附最快手百搭日式红酒酱汁',
+          tag: '下厨',
+          jump_url: '文章跳转链接',
+          isDisplay: false
+        },
+        {
+          attention_num: 10,
+          main_image_url: '../static/imgs/test/avatar.jpeg',
+          title: '日式汉堡肉 附最快手百搭日式红酒酱汁',
+          tag: '下厨',
+          jump_url: '文章跳转链接',
+          isDisplay: false
         }
       ]
     }
-
-    computed = {
-      now () {
-        return +new Date()
-      }
-    }
-
     methods = {
-      plus () {
-        this.mynum++
-      },
-      toast () {
-        let promise = this.$invoke('toast', 'show', {
-          title: '自定义标题',
-          img: 'https://raw.githubusercontent.com/kiinlam/wetoast/master/images/star.png'
+      goToNewsDetail (item) {
+        console.log(item.jump_url)
+        // TODO 文章详情页的page title需要传一个值过去~~可以应用article tag 也可以用其他值
+        wepy.navigateTo({
+          url: '/pages/articleDetail?type=' + 4
         })
-
-        promise.then((d) => {
-          console.log('toast done')
-        })
-      },
-      tap () {
-        console.log('do noting from ' + this.$name)
-      },
-      communicate () {
-        console.log(this.$name + ' tap')
-
-        this.$invoke('counter2', 'minus', 45, 6)
-        this.$invoke('counter1', 'plus', 45, 6)
-
-        this.$broadcast('index-broadcast', 1, 3, 4)
-      },
-      request () {
-        let self = this
-        let i = 10
-        let map = ['MA==', 'MQo=', 'Mg==', 'Mw==', 'NA==', 'NQ==', 'Ng==', 'Nw==', 'OA==', 'OQ==']
-        while (i--) {
-          wepy.request({
-            url: 'https://www.madcoder.cn/tests/sleep.php?time=1&t=css&c=' + map[i] + '&i=' + i,
-            success: function (d) {
-              self.netrst += d.data + '.'
-              self.$apply()
-            }
-          })
-        }
-      },
-      counterEmit (...args) {
-        let $event = args[args.length - 1]
-        console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
       }
     }
-
-    events = {
-      'index-emit': (...args) => {
-        let $event = args[args.length - 1]
-        console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
-      }
-    }
-
     onLoad() {
-      let self = this
-      this.$parent.getUserInfo(function (userInfo) {
-        if (userInfo) {
-          self.userInfo = userInfo
-        }
-        self.normalTitle = '标题已被修改'
-
-        self.setTimeoutTitle = '标题三秒后会被修改'
-        setTimeout(() => {
-          self.setTimeoutTitle = '到三秒了'
-          self.$apply()
-        }, 3000)
-
-        self.$apply()
-      })
+      console.log('index onload')
     }
   }
 </script>

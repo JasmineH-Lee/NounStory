@@ -1,0 +1,23 @@
+<style lang="less">
+
+</style>
+
+<template>
+  a new page
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class New extends wepy.page {
+    config = {
+      navigationBarTitleText: '新页面'
+    }
+    data = {
+    }
+    methods = {
+    }
+    onLoad() {
+      console.log('a new page onload')
+    }
+  }
+</script>
