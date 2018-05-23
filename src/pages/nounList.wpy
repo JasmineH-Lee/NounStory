@@ -121,11 +121,11 @@
         </view>
       </view>
       <scroll-view class="nouns-list" scroll-into-view="{{toView}}" scroll-y="true" scroll-with-animation="true">
-        <view class="nouns-list-item" wx:for="{{nounList}}" id="{{item.index}}" wx:key="key" data-rol="{{item.index}}">
-          <view class="nouns-index">{{item.index}}</view>
-          <view class="nouns-inList" wx:for="{{item.index_list}}" wx:key="key" item="item" @tap.stop="goToNoun('{{item}}')">
-            <view class="noun-name">{{item.noun}}</view>
-            <view class="noun-name-cn">{{item.noun_cn}}</view>
+        <view class="nouns-list-item" wx:for="{{nounList}}" id="{{item.letter}}" wx:key="key" data-rol="{{item.letter}}">
+          <view class="nouns-index">{{item.letter}}</view>
+          <view class="nouns-inList" wx:for="{{item.list}}" wx:key="key" item="item" @tap.stop="goToNoun('{{item}}')">
+            <view class="noun-name">{{item.name_en}}</view>
+            <view class="noun-name-cn">{{item.name_cn}}</view>
           </view>
         </view>
       </scroll-view>
@@ -135,6 +135,8 @@
 
 <script>
   import wepy from 'wepy'
+  import apis from '../apis/apis'
+  import {ERROR_CODE} from '../utils/kvp'
   export default class NounList extends wepy.page {
     config = {
       navigationBarTitleText: '品牌列表'
@@ -145,6 +147,30 @@
           index: 'A',
           id: 1,
           index_list: [
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
             {
               noun_id: 123,
               noun: 'Aritl',
@@ -174,6 +200,30 @@
               noun: 'Britl',
               noun_cn: '中文名',
               jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
             }
           ]
         },
@@ -190,6 +240,18 @@
             {
               noun_id: 123,
               noun: 'Critl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
               noun_cn: '中文名',
               jump_url: 'noun 跳转链接'
             }
@@ -210,6 +272,18 @@
               noun: 'Critl',
               noun_cn: '中文名',
               jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
             }
           ]
         },
@@ -228,6 +302,18 @@
               noun: 'Critl',
               noun_cn: '中文名',
               jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
             }
           ]
         },
@@ -244,6 +330,30 @@
             {
               noun_id: 123,
               noun: 'Critl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
+              noun_cn: '中文名',
+              jump_url: 'noun 跳转链接'
+            },
+            {
+              noun_id: 123,
+              noun: 'Aritl',
               noun_cn: '中文名',
               jump_url: 'noun 跳转链接'
             }
@@ -271,7 +381,8 @@
       letterList: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
         'V', 'W', 'X', 'Y', 'Z', '#'],
       toView: '',
-      searchText: ''
+      searchText: '',
+      resultList: []
     }
     methods = {
       jumpTo (e) {
@@ -285,6 +396,7 @@
       searchSubmit (e) {
         let formId = e.detail.formId
         console.log(this.searchText)
+        console.log(formId)
         // TODO 在这个页面查询搜索结果直接通过页面跳转传给search页面
         // TODO search 页面的搜索在自己页面执行
         wepy.navigateTo({
@@ -296,12 +408,25 @@
       },
       goToNoun (item) {
         wepy.navigateTo({
-          url: '/pages/noun?noun_id=' + item.noun_id
+          url: '/pages/noun?brand_id=' + item.id
         })
       }
     }
-    onLoad() {
+    async onLoad() {
       console.log('nounlist onload')
+      let res = await apis.BrandListByLetter({
+        query: {}
+      })
+      if (res.data.code === ERROR_CODE) {
+        console.log(res)
+        let data = res.data
+        console.log(data)
+        this.nounList = data.data
+        console.log(this.nounList)
+        this.$apply()
+      } else {
+        console.log('error')
+      }
     }
   }
 </script>

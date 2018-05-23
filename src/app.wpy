@@ -44,13 +44,19 @@ export default class extends wepy.app {
       'borderStyle': 'black',
       'list': [{
         'pagePath': 'pages/nounList',
-        'text': '品牌列表'
+//        'text': '品牌列表',
+        'iconPath': './static/imgs/tabs/list.png',
+        'selectedIconPath': './static/imgs/tabs/list_active.png'
       }, {
         'pagePath': 'pages/index',
-        'text': '首页'
+//        'text': '首页',
+        'iconPath': './static/imgs/tabs/index.png',
+        'selectedIconPath': './static/imgs/tabs/index_active.png'
       }, {
         'pagePath': 'pages/me',
-        'text': '我的'
+//        'text': '我的',
+        'iconPath': './static/imgs/tabs/me.png',
+        'selectedIconPath': './static/imgs/tabs/me_active.png'
       }]
     }
   }

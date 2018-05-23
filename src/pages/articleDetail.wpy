@@ -61,14 +61,14 @@
 <template>
   <view class="container" style="padding: 0">
     <view class="noun-detail">
-      <view class="article-theme" style="background-image: url('{{articleDetail.theme_url}}')">
+      <view class="article-theme" style="background-image: url('{{articleDetail.image}}')">
         <view class="article-theme-mask">
           <view class="text noun-name" wx:if="{{articleType !== 4}}">{{ noun }}</view>
           <view class="text title">{{ articleDetail.title }}</view>
-          <view class="text subtitle">{{ articleDetail.subTitle }}</view>
+          <!--<view class="text subtitle">{{ articleDetail.subTitle }}</view>-->
           <view class="text describe"  wx:if="{{articleType === 4}}">
-            <view class="describe-item author">李木子</view>
-            <view class="describe-item publish-time">5月19日</view>
+            <view class="describe-item author">{{ articleDetail.author }}</view>
+            <view class="describe-item publish-time">{{ articleDetail.ctime }}</view>
           </view>
         </view>
       </view>
@@ -95,10 +95,12 @@
       articleType: '',
       noun: 'Jasmine',
       articleDetail: {
-        theme_url: 'https://pic.lehe.com/pic/_o/59/7e/8954fff755fdf834e7a7b044a9f8_690_250.cz.jpg',
+        image: 'https://pic.lehe.com/pic/_o/59/7e/8954fff755fdf834e7a7b044a9f8_690_250.cz.jpg',
         title: 'Instagram 也将推出防沉迷功能，帮助用户更好地管理时间',
         subTitle: '',
-        text: ''
+        text: '',
+        author: '',
+        ctime: ''
       }
     }
     methods = {
@@ -106,7 +108,13 @@
     async onLoad(options) {
       console.log(options)
       this.articleType = parseInt(options.type)
-      let pageTitle = '每日推送'
+      let pageTitle = ''
+      if (options.hasOwnProperty('type')) {
+        let pageTitle = '每日推送'
+        wepy.setNavigationBarTitle({
+          title: pageTitle
+        })
+      }
       if (options.hasOwnProperty('pageTitle')) {
         pageTitle = options.pageTitle
         wepy.setNavigationBarTitle({
@@ -120,6 +128,18 @@
         this.$invoke('htmlParser', 'htmlParserNotice')
       } else {
         // TODO 请求接口拿数据
+      }
+      if (options.hasOwnProperty('articleTitle')) {
+        this.articleDetail.title = options.articleTitle
+        this.$apply()
+      }
+      if (options.hasOwnProperty('author')) {
+        this.articleDetail.author = options.author
+        this.$apply()
+      }
+      if (options.hasOwnProperty('ctime')) {
+        this.articleDetail.ctime = options.ctime
+        this.$apply()
       }
     }
   }

@@ -31,6 +31,16 @@
         line-height: 90rpx;
         text-align: left;
       }
+      .like-icon {
+        display: inline-block;
+        position: absolute;
+        top: 50rpx;
+        right: 80rpx;
+        image {
+          width: 80rpx;
+          height: 80rpx;
+        }
+      }
       .basic-info-detail {
         display: flex;
         flex-flow: row nowrap;
@@ -66,9 +76,19 @@
           font-weight: 600;
         }
         .detail-info {
+          height: 124rpx;
           margin-top: 20rpx;
           margin-right: 30rpx;
           font-size: 28rpx;
+          font-weight: 400;
+          overflow: hidden;
+          text-overflow:ellipsis;
+          white-space: wrap;
+        }
+        .extend-detail {
+          padding: 0 30rpx;
+          text-align: right;
+          font-size: 24rpx;
           font-weight: 400;
         }
       }
@@ -78,10 +98,14 @@
 
 <template>
   <view class="container">
-    <view class="noun" style="background-image: url('{{img}}')">
+    <view class="noun" style="background-image: url('{{brandInfo.bg_image}}')">
       <srcoll-view class="noun-mask">
         <view class="basic-info">
           <view class="noun-title">{{ brandInfo.title }}</view>
+          <view class="like-icon" @tap.stop="likeBrand('{{brandInfo}}')">
+            <image wx:if="{{brandInfo.is_like === 0}}" src="../static/imgs/operate/like_white.png"></image>
+            <image wx:if="{{brandInfo.is_like === 1}}" src="../static/imgs/operate/liked_brand.png"></image>
+          </view>
           <view class="basic-info-detail">
             <view class="label">创始人：</view>
             <view class="detail">{{ brandInfo.founder }}</view>
@@ -109,6 +133,7 @@
           <view class="detail-item" wx:for="{{ brandInfo.info_list}}" wx:key="key" index="index" item="item">
             <view class="detail-title" @tap.stop="goToNounDetail('{{item}}')">{{ item.mean }}</view>
             <view class="detail-info">{{ item.value }}</view>
+            <view class="extend-detail" @tap.stop="goToNounDetail('{{item}}')">查看详情</view>
           </view>
         </view>
       </srcoll-view>
@@ -119,30 +144,98 @@
 <script>
   import wepy from 'wepy'
   import apis from '../apis/apis'
+  import {ERROR_CODE} from '../utils/kvp'
   export default class Noun extends wepy.page {
     config = {
       navigationBarTitleText: 'Noun'
     }
     data = {
       img: 'https://pic.lehe.com/pic/_o/ef/7b/7480f297e74be6e26a39140f4874_750_750.cz.jpg_9fcd41c3_s1_375_2000.jpg',
-      brandInfo: {}
+//      brandInfo: {},
+      brandInfo: {
+        'id': 1,
+        'title': 'Feiyue',
+        'name_en': 'Feiyue',
+        'name_cn': '飞跃',
+        'founder': 'Feiyue',
+        'since': '1930年代',
+        'icountryd': '中国',
+        'industry': '运动品牌',
+        'is_like': 0,
+        'info_list': [
+          {
+            'mean': '品牌背景',
+            'field': 'brand_bg',
+            'value': '具有86年历史的中国Original Sneaker —— Feiyue ，品牌名称Feiyue意味着"flying forward"，而其穿着的舒适感更是无可比拟。“飞跃”的历史可以追溯到上世纪二三十年代，只是当它以及所属的“上海大博文鞋业有限公司”几乎要在中国销声匿迹的时候，2005年，它的历史被法国人彻底改变了。'
+          },
+          {
+            'mean': '品牌文化',
+            'field': 'brand_culture',
+            'value': '如今要买“飞跃”已经不太容易了，而“回力”也许还能在某个小城镇的小店里摸索得到，“解放鞋”在一些军品商店虽然还能觅得踪影，但是要找到“天狼”这个新款则更难。三个中国本土品牌在欧美的重新翻红，其实能很明显的看出“时尚变身”之路的显著轨迹：设计、包装再把商业价值最大化。\n从20元人民币到120欧元\n“飞跃”鞋欧洲再起飞\n现在在google上搜索，你已经找不到“飞跃”的中文网站，因为法国人为它建立了一个英法双语的国际网站，称其为“Feiyue”，还特别对品牌含义做了解释“Flying forward”（向前飞）。\n住在上海的法国人Patrice Bastian（帕特里斯·巴斯蒂安）对“板鞋”的追求异常执着。2005年，他不经意中发现了中国这个名叫“飞跃”的胶鞋，正中他在Sneaker（板鞋）方面的复古情怀。于是，他与自己的好友、设计师Charles Munka（查尔斯·穆卡）一道，成立了新的“飞跃”创意小组。经过策划和包装，2006年2月，面向欧美市场的新“飞跃”系列诞生。价格从50欧元到120欧元不等（折合人民币约500~1200元/双），而记者通过网络搜索到的飞跃鞋目前在国内的售价却仅仅20~50 元人民币不等。现在，飞跃的专柜已经在欧美发散开来，更有日本代理商加入了销售行列。'
+          },
+          {
+            'mean': '品牌辨识',
+            'field': 'brand_identify',
+            'value': 'Feiyue目前在法国、英国、荷兰和比利时销售，价格为50欧元。产品系列的命名大多来自中国武术，比如经典款Shaolin Soul（少林精神）和变化出的白色、黑色等款式，还有Mantis style螳螂、Dragon Dust龙尘、Monkey Claw猴爪等，8月份还将推出高帮的少林系列。\nSneaker界的Collaboration也有所应用，Feiyue分别与Moto777和LCP推出了合作产品。\nPatrice对于Feiyue的品牌推广非常谨慎，因为在过去20年Fake赝品始终困扰着这个品牌，而这对Feiyue品牌的重生产生了不少困难。事实上欧美的功夫学校一直在低价售卖Feiyue的赝品。'
+          }
+        ]
+      }
     }
     methods = {
       goToNounDetail (item) {
-        let title = item.title
+        let title = this.brandInfo.title
         let text = item.value
         let pageTitle = item.mean
+        let articleTitle = title + '的' + item.mean
+        console.log(title)
         wepy.navigateTo({
-          url: '/pages/articleDetail?title=' + title + '&pageTitle=' + pageTitle + '&text=' + text + '&type=' + 2
+          url: '/pages/articleDetail?title=' + title + '&pageTitle=' + pageTitle + '&text=' +
+          text + '&type=' + 2 + '&articleTitle=' + articleTitle
         })
+      },
+      async likeBrand (brand) {
+        console.log(brand)
+        let isLike = brand.is_like
+        let params = {
+          query: {
+            user_id: 1,
+            attr_id: brand.id
+          },
+          method: 'post'
+        }
+        let res
+        if (isLike) {
+          res = await apis.UnLikeBrand(params)
+        } else {
+          res = await apis.LikeBrand(params)
+        }
+        if (res.data.code === ERROR_CODE) {
+//          this.isLoading = false
+          this.getBrandDetail()
+        }
+        this.$apply()
       }
     }
     async onLoad(options) {
       console.log('noun onload')
       console.log(options)
+      let brandId = options.brand_id
       let res = await apis.Noun({
         query: {
-          id: 1
+          id: brandId
+        }
+      })
+      let data = res.data
+      this.brandInfo = data.data
+      console.log(this.brandInfo)
+      this.$apply()
+    }
+    // 获取品牌详情
+    async getBrandDetail () {
+      console.log('123')
+      let res = await apis.Noun({
+        query: {
+          id: this.brandInfo.id
         }
       })
       let data = res.data

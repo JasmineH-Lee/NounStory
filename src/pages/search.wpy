@@ -58,6 +58,7 @@
         width: 150rpx;
         height: 150rpx;
         border-radius: 50%;
+        border: 1px solid #999;
       }
       .noun-info {
         height: 150rpx;
@@ -87,11 +88,11 @@
         </form>
       </view>
       <view class="search-result">
-        <view class="search-result-item" wx:for="{{ searchResult }}" wx:key="key" index="index" item="item">
+        <view class="search-result-item" wx:for="{{ searchResult }}" wx:key="key" index="index" item="item" @tap.stop="goToNoun('{{item}}')">
           <image class="noun-logo" src="{{item.logo}}"></image>
           <view class="noun-info">
-            <view class="noun-name">{{ item.nounName }}</view>
-            <view class="noun-name">{{ item.nounName_cn }}</view>
+            <view class="noun-name">{{ item.name_en }}</view>
+            <view class="noun-name">{{ item.name_cn }}</view>
           </view>
         </view>
       </view>
@@ -101,6 +102,8 @@
 
 <script>
   import wepy from 'wepy'
+  import apis from '../apis/apis'
+  import {ERROR_CODE} from '../utils/kvp'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '搜索'
@@ -160,21 +163,45 @@
     }
     methods = {
       searchSubmit (e) {
-        this.sendData(e.detail.formId)
+        this.getResult(e.detail.formId)
+      },
+      goToNoun (item) {
+        wepy.navigateTo({
+          url: '/pages/noun?brand_id=' + item.id
+        })
       }
     }
-    async sendData(formId) {
-      console.log('send data')
-      console.log(formId)
-      console.log(this.searchText)
-    }
-    onLoad(options) {
-      console.log('search onload')
-      console.log(options.searchKey)
-      console.log(options.formId)
-      if (options.searchKey !== '') {
+    async onLoad(options) {
+      if (options.hasOwnProperty('searchKey')) {
         this.searchText = options.searchKey
         // TODO 执行post请求，查询搜索结果
+        let res = await apis.BrandList({
+          query: {name_cn: this.searchText}
+        })
+        if (res.data.code === ERROR_CODE) {
+          let data = res.data
+          this.searchResult = data.data
+          console.log(this.searchResult)
+          this.$apply()
+        } else {
+          console.log('error')
+        }
+        this.$apply()
+      }
+    }
+    async getResult (formId) {
+      let res = await apis.BrandList({
+        query: {name_cn: this.searchText}
+      })
+      if (res.data.code === ERROR_CODE) {
+        console.log(res)
+        let data = res.data
+        console.log(data)
+        this.searchResult = data.data
+        console.log(this.searchResult)
+        this.$apply()
+      } else {
+        console.log('error')
       }
     }
   }

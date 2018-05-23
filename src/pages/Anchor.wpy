@@ -1,0 +1,141 @@
+<style lang='less'>
+  page {
+    height: 100%;
+  }
+
+  .scr {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /*.test {*/
+    /*height: 80px;*/
+  /*}*/
+
+  .list {
+    position: fixed;
+    z-index: 9;
+    top: 30px;
+    right: 10px;
+  }
+</style>
+<template>
+  <view class='maodian'>
+    <view class='list'>
+      <view wx:for="{{indexList}}" wx:key="key" item="item">
+        <view bindtap='jumpTo' data-opt='{{item}}'>{{item}}</view>
+      </view>
+    </view>
+    <scroll-view
+      scroll-into-view="{{toView}}"
+      scroll-y='true'
+      scroll-with-animation='true'
+      class='scr'>
+      <view wx:for="{{list}}" id='{{item.id}}' wx:key="key" data-rol="{{item.id}}" class="test">
+        <view>{{item.id}}</view>
+        <view wx:for="{{item.content}}" wx:key="key" item="item">
+          <view>{{item}}</view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Anchor extends wepy.page {
+    config = {
+      navigationBarTitleText: '555'
+    }
+    components = {}
+    data = {
+      list: [
+        {
+          id: 'a',
+          content: ['3', '4', '7']
+        },
+        {
+          id: 'b',
+          content: ['3', '4', '7']
+        },
+        {
+          id: 'c',
+          content: ['3', '4', '7']
+        },
+        {
+          id: 'd',
+          content: ['3', '4', '7']
+        },
+        {
+          id: 'e',
+          content: ['3', '4', '7']
+        },
+        {
+          id: 'f',
+          content: ['3', '4', '7']
+        },
+        {
+          id: 'g',
+          content: ['3', '4', '7']
+        },
+        {
+          id: 'h',
+          content: ['3', '4', '7']
+        },
+        {
+          id: 'i',
+          content: ['3', '4', '7']
+        },
+        {
+          id: 'j',
+          content: ['3', '4', '7']
+        },
+        {
+          id: 'k',
+          content: ['3', '4', '7']
+        },
+        {
+          id: 'l',
+          content: ['3', '4', '7']
+        },
+        {
+          id: 'm',
+          content: ['3', '4', '7']
+        },
+        {
+          id: 'n',
+          content: ['3', '4', '7']
+        },
+        {
+          id: 'o',
+          content: ['3', '4', '7']
+        },
+        {
+          id: 'p',
+          content: ['3', '4', '7']
+        }
+      ],
+      toView: '',
+      indexList: ['a', 'd', 'o']
+    }
+
+    computed = {}
+
+    methods = {
+      jumpTo(e) {
+        this.toView = e.currentTarget.dataset.opt
+        this.$apply()
+        console.log(e.currentTarget.dataset.opt)
+      }
+    }
+
+    events = {}
+
+    onLoad() {
+    }
+  }
+</script>

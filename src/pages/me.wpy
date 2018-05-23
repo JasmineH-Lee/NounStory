@@ -1,5 +1,9 @@
 <style lang="less">
   @import "../styles/base";
+  button::after{ border: none; }
+  button {
+    background-color: #fff;
+  }
 
   .me {
     width: 100%;
@@ -52,6 +56,7 @@
         height: 150rpx;
         margin: 20rpx 30rpx;
         .noun-logo {
+          border: 1px solid #aaa;
           width: 150rpx;
           height: 150rpx;
         }
@@ -98,8 +103,8 @@
         }
         .collection-articles-item-bottom {
           position: relative;
-          padding: 0 30rpx;
-          margin: 30rpx 0;
+          padding: 10rpx 30rpx;
+          margin: 50rpx 0;
           display: flex;
           flex-flow: row nowrap;
           justify-content: flex-start;
@@ -121,6 +126,14 @@
             align-items: center;
             .operate-icon {
               margin: 0 10rpx;
+              image {
+                width: 50rpx;
+                height: 50rpx;
+              }
+            }
+            .share {
+              position: relative;
+              top: 10rpx;
             }
           }
         }
@@ -156,18 +169,22 @@
         <!--</view>-->
         <view class="collection-articles-list">
           <view class="collection-articles-item" wx:for="{{ collectionArticlesList }}" index="index" wx:key="key"
-                item="item" @tap.stop="goToNewsDetail('{{item}}')">
-            <!--<view class="collection-articles-item-top">-->
-              <!--<view>{{ item.attention_num }}人收藏了</view>-->
-            <!--</view>-->
-            <image class="article-main-img" src="{{ item.main_image_url }}"></image>
+                item="item">
+            <image class="article-main-img" src="{{ item.main_image_url }}" @tap.stop="goToNewsDetail('{{item}}')"></image>
             <view class="article-title">{{ item.title }}</view>
             <view class="collection-articles-item-bottom">
-              <view class="article-tag">{{ item.tag }}</view>
+              <!--<view class="article-tag">{{ item.tag }}</view>-->
               <view class="article-operate-list">
-                <view class="operate-icon more" @tap.stop="operate('{{item}}')">操作</view>
-                <view class="operate-icon share" @tap.stop="share('{{item}}')">分享</view>
-                <view class="operate-icon collect" @tap.stop="removeCollect('{{item}}')">收藏</view>
+                <view class="operate-icon more" @tap.stop="operate('{{item}}')">
+                  <image src="../static/imgs/operate/other.png"></image>
+                </view>
+                <button open-type="share" class="operate-icon share" @tap.stop="share('{{item}}')">
+                  <image src="../static/imgs/operate/share.png"></image>
+                </button>
+                <view class="operate-icon collect" @tap.stop="likeArticle('{{item}}')">
+                  <image wx:if="{{false}}" src="../static/imgs/operate/collect.png"></image>
+                  <image wx:if="{{true}}" src="../static/imgs/operate/collected.png"></image>
+                </view>
               </view>
             </view>
           </view>
@@ -179,6 +196,8 @@
 
 <script>
   import wepy from 'wepy'
+  import apis from '../apis/apis'
+  import {ERROR_CODE} from '../utils/kvp'
   export default class Me extends wepy.page {
     config = {
       navigationBarTitleText: '我的'
@@ -190,38 +209,38 @@
       },
       attentionNounsList: [
         {
-          id: '123',
-          logo: '../static/imgs/test/avatar.jpeg',
+          id: '121',
+          logo: 'https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/fd0570bbf321593fc834e394adbdad45_121_121.jpg',
           noun: 'CHANEL',
           jump_url: 'noun detail'
         },
         {
           id: '123',
-          logo: '../static/imgs/test/avatar.jpeg',
+          logo: 'https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/27f3f6ddf0ca7261eac1a02deb147c68_121_121.jpg',
           noun: 'CHANEL',
           jump_url: 'noun detail'
         },
         {
-          id: '123',
-          logo: '../static/imgs/test/avatar.jpeg',
+          id: '125',
+          logo: 'https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/3abbd1e61c34754104d6076b4954daa1_121_121.jpg',
           noun: 'CHANEL',
           jump_url: 'noun detail'
         },
         {
-          id: '123',
-          logo: '../static/imgs/test/avatar.jpeg',
+          id: '127',
+          logo: 'https://ss3.baidu.com/-rVXeDTa2gU2pMbgoY3K/it/u=2483818405,959322418&fm=202&mola=new&crop=v1',
           noun: 'CHANEL',
           jump_url: 'noun detail'
         },
         {
-          id: '123',
-          logo: '../static/imgs/test/avatar.jpeg',
+          id: '129',
+          logo: 'https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/ecf83db7a67ac4710977a08fbbe24bbc_121_121.jpg',
           noun: 'CHANEL',
           jump_url: 'noun detail'
         },
         {
-          id: '123',
-          logo: '../static/imgs/test/avatar.jpeg',
+          id: '131',
+          logo: 'https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=506765209,3081964102&fm=58&s=2AAC7A22E694FF800D74D0C60000A0B1&bpow=121&bpoh=75',
           noun: 'CHANEL',
           jump_url: 'noun detail'
         }
@@ -229,28 +248,28 @@
       collectionArticlesList: [
         {
           attention_num: 5,
-          main_image_url: '../static/imgs/test/avatar.jpeg',
+          main_image_url: 'https://pic.lehe.com/pic/_o/69/9c/19a5915c59043f1f153cf17c6798_751_702.cz.jpg',
           title: '日式汉堡肉 附最快手百搭日式红酒酱汁',
           tag: '下厨',
           jump_url: '文章跳转链接'
         },
         {
           attention_num: 6,
-          main_image_url: '../static/imgs/test/avatar.jpeg',
+          main_image_url: 'https://pic.lehe.com/pic/_o/fb/b8/a5f7c5818f318cdb3203fe8b640e_751_702.cz.jpg',
           title: '日式汉堡肉 附最快手百搭日式红酒酱汁',
           tag: '下厨',
           jump_url: '文章跳转链接'
         },
         {
           attention_num: 8,
-          main_image_url: '../static/imgs/test/avatar.jpeg',
+          main_image_url: 'https://pic.lehe.com/pic/_o/7b/ab/6db16c01781e03aeca7b3c4285d3_690_250.cz.jpg',
           title: '日式汉堡肉 附最快手百搭日式红酒酱汁',
           tag: '下厨',
           jump_url: '文章跳转链接'
         },
         {
           attention_num: 10,
-          main_image_url: '../static/imgs/test/avatar.jpeg',
+          main_image_url: 'https://pic.lehe.com/pic/_o/bd/20/41c432f469b25774223ec7f9782c_690_250.cz.jpg',
           title: '日式汉堡肉 附最快手百搭日式红酒酱汁',
           tag: '下厨',
           jump_url: '文章跳转链接'
@@ -274,17 +293,84 @@
         // TODO 分享到微信
         console.log(item)
       },
-      removeCollect (item) {
-        // TODO 取消收藏
-        console.log(item)
+      async likeArticle (article) {
+        console.log(article)
+        let isLike = article.is_like
+        let params = {
+          query: {
+            user_id: 1,
+            attr_id: article.id
+          },
+          method: 'post'
+        }
+        let res
+        if (isLike) {
+          res = await apis.UnLikeArticle(params)
+        } else {
+          res = await apis.LikeArticle(params)
+        }
+        if (res.data.code === ERROR_CODE) {
+//          this.isLoading = false
+//          this.getBrandDetail()
+        }
+        this.$apply()
       },
       operate (item) {
         // TODO 其他操作
         console.log(item)
       }
     }
-    onLoad() {
+    async onLoad() {
       console.log('me onload')
+      let res = await apis.UserBrand({
+        query: {
+          user_id: 1
+        }
+      })
+      let data = {}
+      if (res.data.code === ERROR_CODE) {
+        console.log(res)
+        data = res.data
+        this.attentionNounsList = data.data
+        this.$apply()
+      } else {
+        console.log('error')
+      }
+      res = await apis.UserArticle({
+        query: {
+          user_id: 1
+        }
+      })
+      if (res.data.code === ERROR_CODE) {
+        console.log(res)
+        data = res.data
+        this.collectionArticlesList = data.data
+        this.$apply()
+      } else {
+        console.log('error')
+      }
+
+      this.$apply()
+    }
+    // 分享个人、群
+    onShareAppMessage(res) {
+      console.log(res.target)
+      let title = res.target.dataset.wpyshareA.title
+      let imgUrl = res.target.dataset.wpyshareA.main_image_url
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+        console.log(res.target)
+      }
+      return {
+        title: title,
+        path: '/pages/index',
+        imageUrl: imgUrl,
+        success: (res) => {
+          // 转发成功
+          console.log('success')
+        },
+        fail: (res) => {}
+      }
     }
   }
 </script>
